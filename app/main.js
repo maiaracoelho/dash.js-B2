@@ -102,7 +102,7 @@ app.controller('DashController', function($scope, Sources, Notes, Contributors, 
 
     ////////////////////////////////////////
     //
-    // Metrics
+    // Metrics Maiara
     //
     ////////////////////////////////////////
 
