@@ -843,9 +843,14 @@ MediaPlayer.dependencies.BufferController = function () {
             //self.debug.log("BufferController.validate() " + type + " | state: " + state);
             //self.debug.log(type + " Playback rate: " + self.videoModel.getElement().playbackRate);
             //self.debug.log(type + " Working time: " + currentTime);
-            self.debug.log(type + " Video time: " + currentVideoTime);
-            self.debug.log("Current " + type + " buffer1: " + bufferLevel);
-
+            //self.debug.log(type + " Video time: " + currentVideoTime);
+            if(type=="video"){
+            	self.debug.log("time: "+currentVideoTime+" " + type + " buffer1: " + bufferLevel);
+            }
+            if(type=="audio"){
+            	self.debug.log("time: "+currentVideoTime+" " + type + " buffer2: " + bufferLevel);
+            }
+            
             checkIfSufficientBuffer.call(self);
             //mseSetTimeIfPossible.call(self);
 
