@@ -111,6 +111,8 @@ MediaPlayer.dependencies.FragmentLoader = function () {
                         data: bytes,
                         request: request
                     });
+                    
+                    preInsertThroughSeg.call(self, request);
                 };
 
                 req.onloadend = req.onerror = function () {
@@ -167,6 +169,15 @@ MediaPlayer.dependencies.FragmentLoader = function () {
 
                 req.send();
         },
+        
+        preInsertThroughSeg = function (request) {
+        	var now = new Date(), metricsBaselineThrough, self = this;
+            
+   				if (request.type != "Initialization Segment") {
+                    self.debug.log("Segment Duration: " + request.duration + ": " + request.type + ": " + request.streamType);
+   		        	self.metricsBaselinesModel.addThroughputSeg(request, now);
+   				}
+        },
 
         checkForExistence = function(request) {
             var req = new XMLHttpRequest(),
@@ -195,6 +206,7 @@ MediaPlayer.dependencies.FragmentLoader = function () {
         metricsModel: undefined,
         errHandler: undefined,
         debug: undefined,
+        metricsBaselinesModel: undefined,
 
         load: function (req) {
 

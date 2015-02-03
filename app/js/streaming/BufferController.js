@@ -243,12 +243,24 @@ MediaPlayer.dependencies.BufferController = function () {
                                             function(lastRequest) {
                                                 if ((lastRequest.index - 1) === request.index && !isBufferingCompleted) {
                                                     isBufferingCompleted = true;
+                                                   
                                                     if (stalled) {
                                                         stalled = false;
                                                         self.videoModel.stallStream(type, stalled);
                                                     }
                                                     setState.call(self, READY);
                                                     self.system.notify("bufferingCompleted");
+                                                    self.debug.log("bufferingCompleted");
+                                                    /**Chamar o webservice em PHP para o armazenamento dos dados**/
+                            			            var metrics = self.metricsModel.getMetricsFor(type);
+                            			            var metricsBaseline = self.metricsBaselinesModel.getMetricsBaselineFor(type);                             			                        	 
+                            			            
+                            			            if(metrics != null && metricsBaseline != null){
+                            			            	if (metrics.BufferLevel != null && metricsBaseline.ThroughSeg != null){
+                   			                        		 self.webServiceClient.load(metrics.BufferLevel, metricsBaseline.ThroughSeg); 
+                            			            	}
+           			                        	 	}
+                            			            /**END**/
                                                 }
                                             }
                                         );
@@ -856,6 +868,8 @@ MediaPlayer.dependencies.BufferController = function () {
 
             if (!isSchedulingRequired.call(self) && !initialPlayback && !dataChanged) {
                 doStop.call(self);
+            	self.debug.log("validate");
+
                 return;
             }
 
@@ -877,7 +891,7 @@ MediaPlayer.dependencies.BufferController = function () {
                         self.requestScheduler.adjustExecuteInterval();
                     }
                 );
-                self.abrController.getPlaybackQuality(type, data).then(
+                self.abrController.getPlaybackQuality(type, data, availableRepresentations).then(
                     function (result) {
                         var quality = result.quality;
                         //self.debug.log(type + " Playback quality: " + quality);
@@ -941,6 +955,7 @@ MediaPlayer.dependencies.BufferController = function () {
     return {
         videoModel: undefined,
         metricsModel: undefined,
+        metricsBaselinesModel: undefined,
         manifestExt: undefined,
         manifestModel: undefined,
         bufferExt: undefined,
@@ -952,6 +967,8 @@ MediaPlayer.dependencies.BufferController = function () {
         system: undefined,
         errHandler: undefined,
         scheduleWhilePaused: undefined,
+    	webServiceClient: undefined,
+
 
         initialize: function (type, periodInfo, data, buffer, videoModel, scheduler, fragmentController, source) {
             var self = this,
@@ -1134,6 +1151,16 @@ MediaPlayer.dependencies.BufferController = function () {
 
             self.metricsModel.clearCurrentMetricsForType(type);
         },
+        
+        clearMetricsBaseline: function () {
+            var self = this;
+
+            if (type === null || type === "") {
+                return;
+            }
+
+            self.metricsBaselinesModel.clearCurrentMetricsBaselineForType(type);
+        },
 
         updateBufferState: function() {
             var self = this;
@@ -1180,6 +1207,7 @@ MediaPlayer.dependencies.BufferController = function () {
             deferredStreamComplete = Q.defer();
 
             self.clearMetrics();
+            self.clearMetricsBaseline();
             self.fragmentController.abortRequestsForModel(fragmentModel);
             self.fragmentController.detachBufferController(fragmentModel);
             fragmentModel = null;

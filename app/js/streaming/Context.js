@@ -28,6 +28,7 @@ MediaPlayer.di.Context = function () {
             this.system.mapClass('videoModel', MediaPlayer.models.VideoModel);
             this.system.mapSingleton('manifestModel', MediaPlayer.models.ManifestModel);
             this.system.mapSingleton('metricsModel', MediaPlayer.models.MetricsModel);
+            this.system.mapSingleton('metricsBaselinesModel', MediaPlayer.models.MetricsBaselinesModel);
             this.system.mapClass('protectionModel', MediaPlayer.models.ProtectionModel);
 
             this.system.mapSingleton('textVTTSourceBuffer', MediaPlayer.dependencies.TextVTTSourceBuffer);
@@ -42,7 +43,10 @@ MediaPlayer.di.Context = function () {
 
 
             this.system.mapClass('metrics', MediaPlayer.models.MetricsList);
+            this.system.mapClass('metricsBaseline', MediaPlayer.models.MetricsBaselineList);
             this.system.mapClass('downloadRatioRule', MediaPlayer.rules.DownloadRatioRule);
+            this.system.mapClass('romeroConservativeRule', MediaPlayer.rules.RomeroConservativeRule);
+            this.system.mapClass('romeroAgressiveRule', MediaPlayer.rules.RomeroAgressiveRule);
             this.system.mapClass('insufficientBufferRule', MediaPlayer.rules.InsufficientBufferRule);
             this.system.mapClass('limitSwitchesRule', MediaPlayer.rules.LimitSwitchesRule);
             this.system.mapClass('abrRulesCollection', MediaPlayer.rules.BaseRulesCollection);
@@ -59,6 +63,7 @@ MediaPlayer.di.Context = function () {
             this.system.mapClass('requestScheduler', MediaPlayer.dependencies.RequestScheduler);
             this.system.mapSingleton('schedulerExt', MediaPlayer.dependencies.SchedulerExtensions);
             this.system.mapClass('schedulerModel', MediaPlayer.dependencies.SchedulerModel);
+            this.system.mapClass('webServiceClient', MediaPlayer.dependencies.WebServiceLoader);
         }
     };
 };

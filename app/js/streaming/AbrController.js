@@ -55,6 +55,8 @@ MediaPlayer.dependencies.AbrController = function () {
         abrRulesCollection: undefined,
         manifestExt: undefined,
         metricsModel: undefined,
+        metricsBaselinesModel: undefined,
+
 
         getAutoSwitchBitrate: function () {
             return autoSwitchBitrate;
@@ -88,8 +90,35 @@ MediaPlayer.dependencies.AbrController = function () {
 
             return deferred.promise;
         },
+        
+        getMetricsBaselineFor: function (data) {
+            var deferred = Q.defer(),
+                self = this;
 
-        getPlaybackQuality: function (type, data) {
+            self.manifestExt.getIsVideo(data).then(
+                function (isVideo) {
+                    if (isVideo) {
+                        deferred.resolve(self.metricsBaselinesModel.getMetricsBaselineFor("video"));
+                    } else {
+                        self.manifestExt.getIsAudio(data).then(
+                            function (isAudio) {
+                                if (isAudio) {
+                                    deferred.resolve(self.metricsBaselinesModel.getMetricsBaselineFor("audio"));
+                                } else {
+                                    deferred.resolve(self.metricsBaselinesModel.getMetricsBaselineFor("stream"));
+                                    //self.debug.log("GET STREAM.");
+
+                                }
+                            }
+                        );
+                    }
+                }
+            );
+
+            return deferred.promise;
+        },
+
+        getPlaybackQuality: function (type, data, availableRepresentations) {
             var self = this,
                 deferred = Q.defer(),
                 newQuality = MediaPlayer.rules.SwitchRequest.prototype.NO_CHANGE,
@@ -111,12 +140,14 @@ MediaPlayer.dependencies.AbrController = function () {
             if (autoSwitchBitrate) {
                 //self.debug.log("Check ABR rules.");
 
-                self.getMetricsFor(data).then(
-                    function (metrics) {
+              self.getMetricsFor(data).then(
+                  function (metrics) {
+                    self.getMetricsBaselineFor(data).then(
+                      function (metricsBaseline) {
                         self.abrRulesCollection.getRules().then(
                             function (rules) {
                                 for (i = 0, len = rules.length; i < len; i += 1) {
-                                    funcs.push(rules[i].checkIndex(quality, metrics, data));
+                                    funcs.push(rules[i].checkIndex(quality, metrics, data, metricsBaseline, availableRepresentations));
                                 }
                                 Q.all(funcs).then(
                                     function (results) {
@@ -187,6 +218,8 @@ MediaPlayer.dependencies.AbrController = function () {
                         );
                     }
                 );
+               }
+             );
             } else {
                 self.debug.log("Unchanged quality of " + quality);
                 deferred.resolve({quality: quality, confidence: confidence});

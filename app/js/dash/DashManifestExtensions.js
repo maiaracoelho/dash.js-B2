@@ -733,5 +733,17 @@ Dash.dependencies.DashManifestExtensions.prototype = {
         }
 
         return Q.when(periodEnd);
+    },
+    
+    getBandwidth1: function (representation) {
+        return representation.bandwidth;
+    },
+    
+    getRepresentationCount1: function (adaptation) {
+        return adaptation.Representation_asArray.length;
+    },
+   
+    getRepresentationFor1: function (index, data) {
+        return data.Representation_asArray[index];
     }
 };

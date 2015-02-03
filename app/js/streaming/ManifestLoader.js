@@ -17,6 +17,8 @@ MediaPlayer.dependencies.ManifestLoader = function () {
     var RETRY_ATTEMPTS = 3,
         RETRY_INTERVAL = 500,
         deferred = null,
+        ACTIVE_SCRIPT = false,
+
         parseBaseUrl = function (url) {
             var base = null;
 
@@ -36,6 +38,14 @@ MediaPlayer.dependencies.ManifestLoader = function () {
                 onload = null,
                 report = null,
                 self = this;
+            
+          //Se o script de variação de largura de banda ainda não foi ativado no servidor, ele deve ser.
+            if(!ACTIVE_SCRIPT){
+            	ACTIVE_SCRIPT = true;
+            	self.metricsBaselinesModel.setDateExecution(new Date());
+            	self.metricsBaselinesModel.setUrlMpd(url);
+            	self.webServiceClient.load(0, 0); 
+            }
 
 
             onload = function () {
@@ -114,10 +124,12 @@ MediaPlayer.dependencies.ManifestLoader = function () {
         };
 
     return {
+    	webServiceClient: undefined,
         debug: undefined,
         parser: undefined,
         errHandler: undefined,
         metricsModel: undefined,
+        metricsBaselinesModel: undefined,
         load: function(url) {
             deferred = Q.defer();
             doLoad.call(this, url, RETRY_ATTEMPTS);

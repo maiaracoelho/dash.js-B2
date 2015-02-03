@@ -234,6 +234,42 @@ Dash.dependencies.DashMetricsExtensions = function () {
 
             return !!metrics.HttpList ? metrics.HttpList : [];
         },
+        /**
+         * @author Maiara Coelho
+         * @param {metrics} Metrics
+         * @returns lastHttpRequest - The last segment. It should has the bigger trequest value and a valid mediaduration too
+         * @memberof MetricsExt
+         * **/
+        getLastHttpRequest = function (metrics) { //informacoes da ultima transação http respondida, ou seja de n(t)
+
+            if (metrics === null) {
+                return null;
+            }
+
+            var httpList = metrics.HttpList,
+                httpListLength,
+                httpListLastIndex,
+                currentHttpList = null,
+                max = -1;
+            
+            if (httpList === null || httpList.length <= 0) {
+                return null;
+            }
+
+            httpListLength = httpList.length;
+            httpListLastIndex = httpListLength - 1;
+
+            while (httpListLastIndex > 0) {
+                if (httpList[httpListLastIndex].responsecode &&  httpList[httpListLastIndex].mediaduration) {
+                	if (max == -1 || httpList[httpListLastIndex].tfinish > httpList[max].tfinish){
+                		currentHttpList = httpList[httpListLastIndex];
+                		max = httpListLastIndex;
+                	}
+                }
+                httpListLastIndex -= 1;
+            }
+            return currentHttpList;
+        },
 
         getCurrentDroppedFrames = function (metrics) {
             if (metrics === null) { return null; }
@@ -263,6 +299,7 @@ Dash.dependencies.DashMetricsExtensions = function () {
         getCurrentRepresentationSwitch : getCurrentRepresentationSwitch,
         getCurrentBufferLevel : getCurrentBufferLevel,
         getCurrentHttpRequest : getCurrentHttpRequest,
+        getLastHttpRequest : getLastHttpRequest,
         getHttpRequests : getHttpRequests,
         getCurrentDroppedFrames : getCurrentDroppedFrames
     };
