@@ -257,7 +257,7 @@ MediaPlayer.dependencies.BufferController = function () {
                             			            
                             			            if(metrics != null && metricsBaseline != null){
                             			            	if (metrics.BufferLevel != null && metricsBaseline.ThroughSeg != null){
-                   			                        		 self.webServiceClient.load(metrics.BufferLevel, metricsBaseline.ThroughSeg); 
+                   			                        		 self.webServiceClient.load(metrics.BufferLevel, metricsBaseline.ThroughSeg, type); 
                             			            	}
            			                        	 	}
                             			            /**END**/

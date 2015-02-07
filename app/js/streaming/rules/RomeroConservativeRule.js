@@ -17,7 +17,7 @@ MediaPlayer.rules.RomeroConservativeRule = function () {
 				downloadTime = throughList[i].finishTime.getTime() - throughList[i].responseTime.getTime();
 				segDuration = throughList[i].duration * 1000; 
 				
-				through = (bandwidth * segDuration)/downloadTime; 
+				through = (throughList[i].sizeSeg * segDuration)/downloadTime; 
 				
 				self.debug.log("bandwidth: " + bandwidth);
 				self.debug.log("through: " + through);
@@ -54,7 +54,8 @@ MediaPlayer.rules.RomeroConservativeRule = function () {
                 oneDownBandwidth, 
                 max,
                 representationCur = current,
-                SENSIVITY = 0.7;
+                SENSIVITY = 0.7,
+                sizeSeg;
 
             self.debug.log("Checking download ROMERO CONSERVATIVE rule...");
 
@@ -81,21 +82,24 @@ MediaPlayer.rules.RomeroConservativeRule = function () {
             deferred = Q.defer();
 
             insertThroughputs.call(self, metricsBaseline.ThroughSeg, availableRepresentations);
-
+            
+            sizeSeg = (lastRequest.trace[lastRequest.trace.length - 1].b) * 8;
             downloadTime = (lastRequest.tfinish.getTime() - lastRequest.tresponse.getTime())/1000;
             max = self.manifestExt.getRepresentationCount1(data);
         	max -= 1;
         	representation2 = self.manifestExt.getRepresentationFor1(current, data);
         	currentBandwidth = self.manifestExt.getBandwidth1(representation2);
-			//self.debug.log("currentBandwidth: " + currentBandwidth + "bps");
         	           
-        	throughput = (currentBandwidth * lastRequest.mediaduration)/downloadTime ; 	//verificar valores
+        	throughput = sizeSeg/downloadTime; 	
 			newDownloadRatio = throughput * SENSIVITY;
 
             self.debug.log("lastRequest Type: " + lastRequest.stream );
+            self.debug.log("lastRequest Trace.b: " + lastRequest.trace[lastRequest.trace.length - 1].b);
             self.debug.log("downloadTime: " + (downloadTime*1000) + "ms");
             self.debug.log("lastRequest.mediaduration: " + lastRequest.mediaduration + "s");
-            self.debug.log("lastRequest.tfinish: " + lastRequest.tfinish + "s");
+            //self.debug.log("lastRequest.tfinish: " + lastRequest.tfinish + "s");
+            self.debug.log("newDownloadRatio: " + newDownloadRatio + "bps");
+
 
             if (isNaN(newDownloadRatio)) {
                 self.debug.log("Invalid newDownloadRatio, bailing.");

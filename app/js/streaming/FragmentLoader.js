@@ -95,7 +95,7 @@ MediaPlayer.dependencies.FragmentLoader = function () {
                     latency = (request.firstByteDate.getTime() - request.requestStartDate.getTime());
                     download = (request.requestEndDate.getTime() - request.firstByteDate.getTime());
 
-                    self.debug.log("loaded " + request.streamType + ":" + request.type + ":" + request.startTime + " (" + req.status + ", " + latency + "ms, " + download + "ms)");
+                    self.debug.log("loaded bytes.byteLength: " + bytes.byteLength + ": "+ request.streamType + ":" + request.type + ":" + request.startTime + " (" + req.status + ", " + latency + "ms, " + download + "ms)");
 
                     httpRequestMetrics.tresponse = request.firstByteDate;
                     httpRequestMetrics.tfinish = request.requestEndDate;
@@ -112,7 +112,7 @@ MediaPlayer.dependencies.FragmentLoader = function () {
                         request: request
                     });
                     
-                    preInsertThroughSeg.call(self, request);
+                    preInsertThroughSeg.call(self, request, bytes.byteLength);
                 };
 
                 req.onloadend = req.onerror = function () {
@@ -170,12 +170,12 @@ MediaPlayer.dependencies.FragmentLoader = function () {
                 req.send();
         },
         
-        preInsertThroughSeg = function (request) {
-        	var now = new Date(), metricsBaselineThrough, self = this;
-            
+        preInsertThroughSeg = function (request, byteLength) {
+        	var now = new Date(), metricsBaselineThrough, self = this, sizeSeg;
+        		sizeSeg = byteLength * 8;
    				if (request.type != "Initialization Segment") {
                     self.debug.log("Segment Duration: " + request.duration + ": " + request.type + ": " + request.streamType);
-   		        	self.metricsBaselinesModel.addThroughputSeg(request, now);
+   		        	self.metricsBaselinesModel.addThroughputSeg(request, now, sizeSeg);
    				}
         },
 
