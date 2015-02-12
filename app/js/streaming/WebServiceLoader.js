@@ -7,11 +7,15 @@ MediaPlayer.dependencies.WebServiceLoader = function () {
 		arqJson = "",
 		runWebservice = 0,
 	    
+		
+		/**Não esquecer de sincronizar os relógios ao inicio dos experimentos**/
+		
+		
     doLoad = function (bufferLevelMetrics, throughSegMetrics, stream) {
             var xmlhttp = new XMLHttpRequest(),
                 self = this, 
                 url = "http://192.168.3.3/dash_vod/webservice.php", 
-                scen = 5; //<<<<----Definicao do cenario a ser utilizado
+                scen = 3; //<<<<----Definicao do cenario a ser utilizado
         		runWebservice++;
         		
             if ( bufferLevelMetrics == 0 && throughSegMetrics == 0){

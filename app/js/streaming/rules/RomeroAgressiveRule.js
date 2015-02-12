@@ -5,7 +5,7 @@
 MediaPlayer.rules.RomeroAgressiveRule = function () {
     "use strict";
     var insertThroughputs = function (throughList, availableRepresentations) {
-		var self = this, representation, bandwidth, quality, downloadTime, segDuration, through;
+		var self = this, representation, bandwidth, quality, downloadTime,  through;
 		
 		for(var i = 0; i < throughList.length; i++){
 			if(throughList[i].bandwidth == null || throughList[i].bandwidth == 0){
@@ -15,9 +15,8 @@ MediaPlayer.rules.RomeroAgressiveRule = function () {
 				bandwidth /= 1000; //bit/ms
 				
 				downloadTime = throughList[i].finishTime.getTime() - throughList[i].responseTime.getTime();
-				segDuration = throughList[i].duration * 1000; 
 				
-				through = (throughList[i].sizeSeg * segDuration)/downloadTime; 
+				through = throughList[i].sizeSeg/downloadTime; 
 				
 				self.debug.log("bandwidth: " + bandwidth);
 				self.debug.log("through: " + through);
