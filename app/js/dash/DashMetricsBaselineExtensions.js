@@ -45,10 +45,8 @@ Dash.dependencies.DashMetricsBaselineExtensions = function () {
     getAverageThrough = function (time1, throughList, startSessionTime) {
     	var begin, 
     	end = throughList.length - 1,
-    	intersection, 
- 		throughInters, 
- 		somaInters = 0, 
- 		somaThroughInters = 0, 
+    	average, 
+ 		sumThroughs = 0, 
  		countSegs = 0,
  		startTime, 
  		startTimeTemp, 
@@ -64,19 +62,17 @@ Dash.dependencies.DashMetricsBaselineExtensions = function () {
     			}else{
     				startTimeTemp = startTime;
     			}
-    			intersection = finishTime - startTimeTemp;
-    			throughInters = throughList[begin].throughSeg * intersection;
+    			sumThroughs += throughList[begin].throughSeg;
     			
-    			somaInters += intersection;
-    			somaThroughInters += throughInters;
-    	    	
     			countSegs++;
     		}
     	}
     	
-    	this.debug.log("Baseline - Segments number: "+ countSegs);
+    	average = sumThroughs/countSegs;
+    	
+    	this.debug.log("Baseline - average: "+ average);
 
-    	return (somaThroughInters/somaInters);
+    	return average;
         
     };
 
