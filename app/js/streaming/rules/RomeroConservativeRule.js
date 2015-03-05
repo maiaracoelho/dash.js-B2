@@ -102,17 +102,15 @@ MediaPlayer.rules.RomeroConservativeRule = function () {
 
             if (isNaN(newDownloadRatio)) {
                 self.debug.log("Invalid newDownloadRatio, bailing.");
-                deferred.resolve(new MediaPlayer.rules.SwitchRequest());
+                deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
             } else {
             	if(currentBuffer.level == 0){
-                    self.debug.log("Current 0");
-                    current = 0;
-                    deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
+                    deferred.resolve(new MediaPlayer.rules.SwitchRequest(0));	
             	}else{
             		if (newDownloadRatio > currentBandwidth) {
     					if (representationCur == max){
         					self.debug.log("No change.");
-    		                return Q.when(new MediaPlayer.rules.SwitchRequest(MediaPlayer.rules.SwitchRequest.prototype.NO_CHANGE));
+        					deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
     					}
     					while (representationCur < max){
     						representation3 = self.manifestExt.getRepresentationFor1(representationCur + 1, data);
@@ -133,7 +131,7 @@ MediaPlayer.rules.RomeroConservativeRule = function () {
     				}else{
     					if(representationCur == 0){
         					self.debug.log("No change.");
-    		                return Q.when(new MediaPlayer.rules.SwitchRequest(MediaPlayer.rules.SwitchRequest.prototype.NO_CHANGE));
+        					deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
     					}
     					while (representationCur > 0){
     						representation1 = self.manifestExt.getRepresentationFor1(representationCur - 1, data);

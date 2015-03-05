@@ -102,14 +102,12 @@ MediaPlayer.rules.RomeroMeanRule = function () {
     				self.debug.log("Baseline - currentBandwidthMs: " + currentBandwidthMs + "bpms");
     					     
     				if(currentBuffer.level == 0){
-                        self.debug.log("Current 0");
-                        current = 0;
-                        deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
+                        deferred.resolve(new MediaPlayer.rules.SwitchRequest(0));	
                 	}else{
                 		if (averageThroughput > currentBandwidthMs) {
                 			if (representationCur == max){
             					self.debug.log("No change.");
-        		                return Q.when(new MediaPlayer.rules.SwitchRequest(MediaPlayer.rules.SwitchRequest.prototype.NO_CHANGE));
+            					return Q.when(new MediaPlayer.rules.SwitchRequest(current));
         					}
                 			while (representationCur < max){
         						representation3 = self.manifestExt.getRepresentationFor1(representationCur + 1, data);
@@ -131,7 +129,7 @@ MediaPlayer.rules.RomeroMeanRule = function () {
         				}else{
         					if(representationCur == 0){
             					self.debug.log("No change.");
-        		                return Q.when(new MediaPlayer.rules.SwitchRequest(MediaPlayer.rules.SwitchRequest.prototype.NO_CHANGE));
+            					return Q.when(new MediaPlayer.rules.SwitchRequest(current));
         					}
         					while (representationCur > 0){
         						representation1 = self.manifestExt.getRepresentationFor1(representationCur - 1, data);
