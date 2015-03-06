@@ -1,7 +1,7 @@
 ﻿/** Algoritmo que considera características do buffer, implementado a partir do artigo TR5
  * 	@class MillerRule
  */
-MediaPlayer.rules.MillerRule = function () {
+MediaPlayer.rules.AdapTech = function () {
     "use strict";
     
         var runningFastStart=true,
@@ -185,6 +185,6 @@ MediaPlayer.rules.MillerRule = function () {
        };
     };
 
-MediaPlayer.rules.MillerRule.prototype = {
-    constructor: MediaPlayer.rules.MillerRule
+MediaPlayer.rules.AdapTech.prototype = {
+    constructor: MediaPlayer.rules.AdapTech
 };

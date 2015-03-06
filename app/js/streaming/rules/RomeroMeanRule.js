@@ -102,7 +102,8 @@ MediaPlayer.rules.RomeroMeanRule = function () {
     				self.debug.log("Baseline - currentBandwidthMs: " + currentBandwidthMs + "bpms");
     					     
     				if(currentBuffer.level == 0){
-                        deferred.resolve(new MediaPlayer.rules.SwitchRequest(0));	
+    					current = 0;
+                        deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
                 	}else{
                 		if (averageThroughput > currentBandwidthMs) {
                 			if (representationCur == max){

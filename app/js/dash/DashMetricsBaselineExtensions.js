@@ -70,7 +70,7 @@ Dash.dependencies.DashMetricsBaselineExtensions = function () {
     	
     	average = sumThroughs/countSegs;
     	
-    	this.debug.log("Baseline - average: "+ average);
+    	this.debug.log("Baseline - average: "+ countSegs);
 
     	return average;
         

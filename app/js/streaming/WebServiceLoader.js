@@ -14,8 +14,8 @@ MediaPlayer.dependencies.WebServiceLoader = function () {
     doLoad = function (bufferLevelMetrics, throughSegMetrics, stream) {
             var xmlhttp = new XMLHttpRequest(),
                 self = this, 
-                url = "http://localhost/dash_vod/webservice.php", 
-                scen = 1; //<<<<----Definicao do cenario a ser utilizado
+                url = "http://192.168.3.3/dash_vod/webservice.php", 
+                scen = 3; //<<<<----Definicao do cenario a ser utilizado
         		runWebservice++;
         		
             if ( bufferLevelMetrics == 0 && throughSegMetrics == 0){

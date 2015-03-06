@@ -21,8 +21,9 @@ MediaPlayer.rules.BaseRulesCollection = function () {
         //insufficientBufferRule: undefined,
         //limitSwitchesRule: undefined,
         //romeroAgressiveRule: undefined,
-        romeroMeanRule: undefined,
-        //romeroConservativeRule: undefined,
+        //romeroMeanRule: undefined,
+        romeroConservativeRule: undefined,
+        //adapTech: undefined,
 
         getRules: function () {
             return Q.when(rules);
@@ -37,8 +38,9 @@ MediaPlayer.rules.BaseRulesCollection = function () {
                     //r.push(self.insufficientBufferRule);
                     //r.push(self.limitSwitchesRule);
                     //r.push(self.romeroAgressiveRule);
-                    r.push(self.romeroMeanRule);
-                    //r.push(self.romeroConservativeRule);
+                    //r.push(self.romeroMeanRule);
+                    r.push(self.romeroConservativeRule);
+                    //r.push(self.adapTech);
                 }
             );
         }

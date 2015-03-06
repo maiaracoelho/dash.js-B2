@@ -106,7 +106,8 @@ MediaPlayer.rules.RomeroAgressiveRule = function () {
                 deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
             } else {
             	if(currentBuffer.level == 0){
-                    deferred.resolve(new MediaPlayer.rules.SwitchRequest(0));	
+            		current = 0;
+                    deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
             	}else{
             		if (newDownloadRatio > currentBandwidth) {
     					if (representationCur == max){
