@@ -4,8 +4,7 @@
 MediaPlayer.rules.AdapTech = function () {
     "use strict";
     
-        var runningFastStart=true,
-        	deltaTime=15000, 
+        var deltaTime=15000, 
         	        	      
         	insertThroughputs = function (throughList, availableRepresentations) {
         		var self = this, representation, bandwidth, quality, downloadTime, segDuration, through;
@@ -50,7 +49,7 @@ MediaPlayer.rules.AdapTech = function () {
                 currentBufferLevel  = self.metricsExt.getCurrentBufferLevel(metrics),					
                 bMin=10,
                 bLow=20,
-                bHigh=30,														
+                bHigh=40,														
                 downloadTime,															
                 currentThrough,																					
                 time = 0, 
@@ -65,7 +64,7 @@ MediaPlayer.rules.AdapTech = function () {
                 representation1,
                 startRequest = 0,
                 averageThrough,
-                currentBandwidthMs = 0,
+                average = 0,
                 sizeSeg,
                 perfil1,
                 perfil2;
@@ -122,7 +121,6 @@ MediaPlayer.rules.AdapTech = function () {
             	max -= 1;
             	representation = self.manifestExt.getRepresentationFor1(current, data);
             	currentBandwidth = self.manifestExt.getBandwidth1(representation);
-            	currentBandwidthMs = currentBandwidth/1000;
             	currentThrough = sizeSeg/downloadTime; 	
             	currentThrough /= 1000; 	
         		
@@ -130,55 +128,64 @@ MediaPlayer.rules.AdapTech = function () {
         		self.debug.log("Baseline - t1: " + t1);
         		self.debug.log("Baseline - currentBufferLevel.level: " + currentBufferLevel.level + " s");
         		self.debug.log("Baseline - currentBandwidth: " + currentBandwidth + " bits/s");
-        		self.debug.log("Baseline - currentThrough: " + currentThrough + " bits/s");
+        		self.debug.log("Baseline - currentThrough: " + currentThrough + " bits/ms");
 
         		if(metricsBaseline.ThroughSeg.length == 1){
             		averageThrough = currentThrough;	
         		}else{
-            		averageThrough = self.metricsBaselineExt.getAverageThrough(t1, metricsBaseline.ThroughSeg, startRequest);	
+            		average = self.metricsBaselineExt.getAverageThrough(t1, metricsBaseline.ThroughSeg, startRequest);	
+            		averageThrough = (sigma * average) + ((1 - sigma) * currentThrough);
         		} 
+        		self.debug.log("Baseline - max: " + max);
+
         		self.debug.log("Baseline - averageThrough: " + averageThrough + " bits/ms");
 	
 	        	if (isNaN(averageThrough)) {
 	                     //self.debug.log("The averageThrough is NaN, bailing.");
-	             		 self.metricsBaselinesModel.setBdelay(bDelay);
-	                     deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
+	        			return Q.when(new MediaPlayer.rules.SwitchRequest(current));
 	            }else{
-	            	perfil1 =  current;
-	            	perfil2 =  current;
+	            	perfil1 =  0;
+	            	perfil2 =  0;
 	            	
-	            	for (var i = 0; i < availableRepresentations.length; i++){
-	            		representation1 = availableRepresentations[i];
+	            	for (var i = 0; i < max; i++){
+	            		representation1 = self.manifestExt.getRepresentationFor1(i, data);
 	    				bandwidth = self.metricsExt.getBandwidthForRepresentation(representation1.id);
+	    				bandwidth /= 1000;
 	    				
-	    				if ((bandwidth/1000) < (slackC * averageThrough)){
+	    				if (bandwidth <slackC * currentThrough){
 	    					perfil1 =  representation1.id;
 	    				}
 	    				
-	    				if (bandwidth < (slackC * currentThrough)){
+	    				if (bandwidth < slackC * averageThrough){
 	    					perfil2 =  representation1.id;
 	    				}
-	    				
+
 	            	}
 	            	self.debug.log("Baseline - perfil1: " + perfil1);
     				self.debug.log("Baseline - perfil2: " + perfil2);
 	            	
-	            	if(bLow < currentBufferLevel.level && currentBufferLevel.level <  bHigh){
+	            	if((bLow < currentBufferLevel.level) && (currentBufferLevel.level <  bHigh)){
 	            		if(perfil2 > current){
-	            			current++;
+	            			current += 1;
+	    	            	self.debug.log("Baseline - perfil2 > current");
+
 	            		}
-					}else if (bMin < currentBufferLevel.level && currentBufferLevel.level <  bLow){
+					}else if ((bMin < currentBufferLevel.level) && (currentBufferLevel.level <  bLow)){
 	            		if(perfil1 < current){
-	            			current--;
+	            			current -= 1;
+	    	            	self.debug.log("Baseline - perfil1 < current");
 	            		}else if (perfil1 > current){
-	            			currrent++;
+	            			current += 1;
+	    	            	self.debug.log("Baseline - perfil1 > current");
 	            		}
 	            	}else if (currentBufferLevel.level < bMin){
 	            		current = 0;
+    	            	self.debug.log("Baseline - 0: " + current);
 	            	}
-
+	            	
 	            	self.debug.log("Baseline - Current: " + current);
-                    deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
+            		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
+
 	            }
 	        	 return deferred.promise;	 
        	}

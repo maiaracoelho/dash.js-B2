@@ -234,6 +234,7 @@ Dash.dependencies.DashMetricsExtensions = function () {
 
             return !!metrics.HttpList ? metrics.HttpList : [];
         },
+        
         /**
          * @author Maiara Coelho
          * @param {metrics} Metrics
@@ -270,6 +271,46 @@ Dash.dependencies.DashMetricsExtensions = function () {
             }
             return currentHttpList;
         },
+        
+        /**
+         * @author Maiara Coelho
+         * @param {metrics} Metrics
+         * @returns FirstHttp - The first segment. It should has the smaller trequest value and valid mediaduration too
+         * @memberof MetricsExt
+         * **/
+        getFirstHttpRequest = function (metrics) { 
+        	
+        	if (metrics === null) {
+                return null;
+            }
+
+            var httpList = metrics.HttpList,
+                httpListLength,
+                httpListFirstIndex,
+                FirstHttp = null,
+                min;
+
+            if (httpList === null || httpList.length <= 0) {
+
+                return null;
+            }
+
+            httpListLength = httpList.length - 1;
+            httpListFirstIndex = 0;
+            
+            min = -1;
+            
+            while (httpListFirstIndex < httpListLength) {
+                if (httpList[httpListFirstIndex].responsecode && httpList[httpListFirstIndex].mediaduration) {
+                	if (min == -1 || httpList[httpListFirstIndex].trequest < httpList[min].trequest){
+                		FirstHttp = httpList[httpListFirstIndex];
+                		min = httpListFirstIndex;
+                	}
+                }
+                httpListFirstIndex+=1;
+            }
+            return FirstHttp;
+        },
 
         getCurrentDroppedFrames = function (metrics) {
             if (metrics === null) { return null; }
@@ -300,6 +341,7 @@ Dash.dependencies.DashMetricsExtensions = function () {
         getCurrentBufferLevel : getCurrentBufferLevel,
         getCurrentHttpRequest : getCurrentHttpRequest,
         getLastHttpRequest : getLastHttpRequest,
+        getFirstHttpRequest : getFirstHttpRequest,
         getHttpRequests : getHttpRequests,
         getCurrentDroppedFrames : getCurrentDroppedFrames
     };
