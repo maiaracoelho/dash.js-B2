@@ -1,7 +1,7 @@
 ﻿/** Algoritmo que considera características do buffer, implementado a partir do artigo TR5
  * 	@class MillerRule
  */
-MediaPlayer.rules.AdapTech = function () {
+MediaPlayer.rules.AdapTech2 = function () {
     "use strict";
     
         var deltaTime=15000, 
@@ -166,7 +166,7 @@ MediaPlayer.rules.AdapTech = function () {
 	            	
 	            	if((bLow < currentBufferLevel.level) && (currentBufferLevel.level <  bHigh)){
 	            		if(perfil2 > current){
-	            			current += 1;
+	            			current = perfil2;
 	    	            	self.debug.log("Baseline - perfil2 > current");
 
 	            		}
@@ -175,7 +175,7 @@ MediaPlayer.rules.AdapTech = function () {
 	            			current -= 1 ;
 	    	            	self.debug.log("Baseline - perfil1 < current");
 	            		}else if (perfil1 > current){
-	            			current += 1;
+	            			current = perfil1;
 	    	            	self.debug.log("Baseline - perfil1 > current");
 	            		}
 	            	}else if (currentBufferLevel.level < bMin){
@@ -192,6 +192,6 @@ MediaPlayer.rules.AdapTech = function () {
        };
     };
 
-MediaPlayer.rules.AdapTech.prototype = {
-    constructor: MediaPlayer.rules.AdapTech
+MediaPlayer.rules.AdapTech2.prototype = {
+    constructor: MediaPlayer.rules.AdapTech2
 };

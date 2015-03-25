@@ -50,6 +50,7 @@ MediaPlayer.di.Context = function () {
             this.system.mapClass('insufficientBufferRule', MediaPlayer.rules.InsufficientBufferRule);
             this.system.mapClass('romeroMeanRule', MediaPlayer.rules.RomeroMeanRule);
             this.system.mapClass('adapTech', MediaPlayer.rules.AdapTech);
+            this.system.mapClass('adapTech2', MediaPlayer.rules.AdapTech2);
             this.system.mapClass('limitSwitchesRule', MediaPlayer.rules.LimitSwitchesRule);
             this.system.mapClass('abrRulesCollection', MediaPlayer.rules.BaseRulesCollection);
 

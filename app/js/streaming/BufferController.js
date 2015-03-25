@@ -14,6 +14,8 @@
 MediaPlayer.dependencies.BufferController = function () {
     "use strict";
     var STALL_THRESHOLD = 0.5,
+    	insertVideo=true,
+    	insertAudio=true,
         QUOTA_EXCEEDED_ERROR_CODE = 22,
         WAITING = "WAITING",
         READY = "READY",
@@ -150,7 +152,49 @@ MediaPlayer.dependencies.BufferController = function () {
 
         doStop = function () {
             if (state === WAITING) return;
+            
+            var currentVideoTime = this.videoModel.getCurrentTime();
+            
+            
+            if(type == "audio" && insertAudio){
+                this.debug.log("Audio");
 
+            	if((currentVideoTime).toFixed(2) >=  (periodInfo.duration - 10)){
+                    this.debug.log("Audio entrou");
+
+            		insertAudio = false;
+                    /**Chamar o webservice em PHP para o armazenamento dos dados**/
+    	            var metrics = this.metricsModel.getMetricsFor(type);
+    	            var metricsBaseline = this.metricsBaselinesModel.getMetricsBaselineFor(type);                             			                        	 
+    	            
+    	            if(metrics != null && metricsBaseline != null){
+    	            	if (metrics.BufferLevel != null && metricsBaseline.ThroughSeg != null){
+                       		 this.webServiceClient.load(metrics.BufferLevel, metricsBaseline.ThroughSeg, type); 
+    	            	}
+               	 	}
+    	            /**END**/
+            	}
+            }
+            if(type == "video" && insertVideo){
+                this.debug.log("Video");
+
+                 	if((currentVideoTime).toFixed(2) >=  (periodInfo.duration - 10)){
+                        this.debug.log("Video entrou");
+
+                 		insertVideo = false;
+                         /**Chamar o webservice em PHP para o armazenamento dos dados**/
+         	            var metrics = this.metricsModel.getMetricsFor(type);
+         	            var metricsBaseline = this.metricsBaselinesModel.getMetricsBaselineFor(type);                             			                        	 
+         	            
+         	            if(metrics != null && metricsBaseline != null){
+         	            	if (metrics.BufferLevel != null && metricsBaseline.ThroughSeg != null){
+                            		 this.webServiceClient.load(metrics.BufferLevel, metricsBaseline.ThroughSeg, type); 
+         	            	}
+                    	 }
+         	            /**END**/
+                 	}
+            }
+            	
             this.debug.log("BufferController " + type + " stop.");
             setState.call(this, WAITING);
             this.requestScheduler.stopScheduling(this);
@@ -160,6 +204,8 @@ MediaPlayer.dependencies.BufferController = function () {
             waitingForBuffer = false;
 
             clearPlayListTraceMetrics(new Date(), MediaPlayer.vo.metrics.PlayList.Trace.USER_REQUEST_STOP_REASON);
+            
+            
         },
 
         updateRepresentations = function (data, periodInfo) {
@@ -250,17 +296,7 @@ MediaPlayer.dependencies.BufferController = function () {
                                                     }
                                                     setState.call(self, READY);
                                                     self.system.notify("bufferingCompleted");
-                                                    self.debug.log("bufferingCompleted");
-                                                    /**Chamar o webservice em PHP para o armazenamento dos dados**/
-                            			            var metrics = self.metricsModel.getMetricsFor(type);
-                            			            var metricsBaseline = self.metricsBaselinesModel.getMetricsBaselineFor(type);                             			                        	 
-                            			            
-                            			            if(metrics != null && metricsBaseline != null){
-                            			            	if (metrics.BufferLevel != null && metricsBaseline.ThroughSeg != null){
-                   			                        		 self.webServiceClient.load(metrics.BufferLevel, metricsBaseline.ThroughSeg, type); 
-                            			            	}
-           			                        	 	}
-                            			            /**END**/
+                                                    
                                                 }
                                             }
                                         );
@@ -950,7 +986,8 @@ MediaPlayer.dependencies.BufferController = function () {
             } else if (state === VALIDATING) {
                 setState.call(self, READY);
             }
-        };
+            
+    };
 
     return {
         videoModel: undefined,
