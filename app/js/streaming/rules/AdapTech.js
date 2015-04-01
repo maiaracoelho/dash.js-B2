@@ -38,7 +38,7 @@ MediaPlayer.rules.AdapTech = function () {
              * @param {metrics} metrics - Metricas armazenadas em MetricsList
              * @param {data} data - Dados de audio ou vídeo
              * @param {metricsBaseline} metricsBaseline - Metricas armazenadas em MetricsBaselineList
-             * @memberof MillerRule#
+             * @memberof AdapTech
              */
             
             checkIndex: function (current, metrics, data, metricsBaseline, availableRepresentations) {

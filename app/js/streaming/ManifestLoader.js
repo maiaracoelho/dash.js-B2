@@ -44,7 +44,7 @@ MediaPlayer.dependencies.ManifestLoader = function () {
             	ACTIVE_SCRIPT = true;
             	self.metricsBaselinesModel.setDateExecution(new Date());
             	self.metricsBaselinesModel.setUrlMpd(url);
-            	//self.webServiceClient.load(0, 0, null); 
+            	self.webServiceClient.load(0, 0, null); 
             }
 
 
