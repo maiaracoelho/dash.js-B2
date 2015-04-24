@@ -49,7 +49,8 @@ MediaPlayer.rules.AdapTech2 = function () {
                 currentBufferLevel  = self.metricsExt.getCurrentBufferLevel(metrics),					
                 bMin=10,
                 bLow=20,
-                bHigh=40,														
+                bHigh=40,
+                bReb = 0.5,
                 downloadTime,															
                 currentThrough,																					
                 time = 0, 
@@ -67,9 +68,10 @@ MediaPlayer.rules.AdapTech2 = function () {
                 average = 0,
                 sizeSeg,
                 perfil1,
-                perfil2;
+                perfil2, 
+                probability;
                 
-            	self.debug.log("Baseline - Regra TR5 MillerRule");
+            	self.debug.log("Baseline - Regra Adaptech2");
              	self.debug.log("Baseline - Tamanho BufferLevel: " + metrics.BufferLevel.length);
              	self.debug.log("Baseline - Tamanho Through: " + metricsBaseline.ThroughSeg.length);
              	
@@ -164,9 +166,9 @@ MediaPlayer.rules.AdapTech2 = function () {
 	            	self.debug.log("Baseline - perfil1: " + perfil1);
     				self.debug.log("Baseline - perfil2: " + perfil2);
 	            	
-	            	if((bLow < currentBufferLevel.level) && (currentBufferLevel.level <  bHigh)){
+    				if((bLow < currentBufferLevel.level) && (currentBufferLevel.level <  bHigh)){
 	            		if(perfil2 > current){
-	            			current = perfil2;
+	            			current += 1;
 	    	            	self.debug.log("Baseline - perfil2 > current");
 
 	            		}
@@ -175,12 +177,22 @@ MediaPlayer.rules.AdapTech2 = function () {
 	            			current -= 1 ;
 	    	            	self.debug.log("Baseline - perfil1 < current");
 	            		}else if (perfil1 > current){
-	            			current = perfil1;
+	            			current += 1;
 	    	            	self.debug.log("Baseline - perfil1 > current");
 	            		}
 	            	}else if (currentBufferLevel.level < bMin){
-	            		current = 0;
-    	            	self.debug.log("Baseline - 0: " + current);
+    	            	self.debug.log("Baseline - calculate probability ");
+
+	            		probability = self.metricsBaselineExt.getRebufferingProbability(time, t1,  metrics.BufferLevel, startRequest, bMin, bReb);	
+    	            	self.debug.log("Baseline - probability: " + probability);
+    	            	if(probability <= 0.4){
+        	            	self.debug.log("Baseline - sem fuga ");
+        	            	current = 1;
+    	            	}else{
+    	            		self.debug.log("Baseline - com fuga ");
+        	            	current = 0;
+    	            	}
+	            		
 	            	}
 	            	
 	            	self.debug.log("Baseline - Current: " + current);

@@ -75,12 +75,45 @@ Dash.dependencies.DashMetricsBaselineExtensions = function () {
 
     	return average;
         
+    },
+    
+    getRebufferingProbability = function (time, startTime, bufferList, startSessionTime, bMin, bReb) {
+    	var index = bufferList.length - 1, 
+ 		countGreater = 0,
+ 		countSmaller = 0,
+ 		countRebuffer = 0,
+ 		bufferTime,
+ 		probability;
+
+    	this.debug.log("Baseline - getRebufferingProbability ");
+
+    	while (index > 0){
+    		bufferTime = bufferList[index].t.getTime() - startSessionTime;
+    		
+    		if(bufferTime >= startTime && bufferTime <= time){
+    			if (bufferList[index].level > bMin){
+    				countGreater++;
+    			}else{
+    				countSmaller++;
+    				if (bufferList[index].level == bReb) countRebuffer++;
+    			}    			
+    		}
+    		
+    		index--;
+    	}
+    	probability = countSmaller/(countGreater + countSmaller);
+    	
+    	this.debug.log("Baseline - probability: "+ probability);
+
+    	return probability;
+        
     };
 
     return {
     	debug : undefined,
     	getAverageThrough3Segs : getAverageThrough3Segs,
-    	getAverageThrough : getAverageThrough
+    	getAverageThrough : getAverageThrough,
+    	getRebufferingProbability : getRebufferingProbability
     };
 };
 
