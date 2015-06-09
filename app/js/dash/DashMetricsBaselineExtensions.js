@@ -95,7 +95,7 @@ Dash.dependencies.DashMetricsBaselineExtensions = function () {
     				countGreater++;
     			}else{
     				countSmaller++;
-    				if (bufferList[index].level == bReb) countRebuffer++;
+    				if (bufferList[index].level <= bReb) countRebuffer++;
     			}    			
     		}
     		

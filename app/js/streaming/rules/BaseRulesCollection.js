@@ -23,9 +23,10 @@ MediaPlayer.rules.BaseRulesCollection = function () {
          //romeroAgressiveRule: undefined,
         //romeroMeanRule: undefined,
         //romeroConservativeRule: undefined,
-        //adapTech: undefined,
+        adapTech: undefined,
         //adapTech2: undefined,
-        OSMF: undefined,
+        //adapTech3: undefined,
+        //OSMF: undefined,
 
         getRules: function () {
             return Q.when(rules);
@@ -42,9 +43,10 @@ MediaPlayer.rules.BaseRulesCollection = function () {
                     //r.push(self.romeroAgressiveRule);
                     //r.push(self.romeroMeanRule);
                     //r.push(self.romeroConservativeRule);
-                    //r.push(self.adapTech);
-                    //r.push(self.adapTech2);
-                    r.push(self.OSMF);
+                    r.push(self.adapTech);
+                     //r.push(self.adapTech2);
+                    //r.push(self.adapTech3);
+                    //r.push(self.OSMF);
                 }
             );
         }

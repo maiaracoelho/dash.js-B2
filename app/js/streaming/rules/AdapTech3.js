@@ -1,5 +1,5 @@
 ﻿
-MediaPlayer.rules.AdapTech2 = function () {
+MediaPlayer.rules.AdapTech3 = function () {
     "use strict";
 
     var deltaTime=15000, 
@@ -75,7 +75,7 @@ MediaPlayer.rules.AdapTech2 = function () {
                 probability,
                 bReb = 0.5;
 
-            self.debug.log("Checking AdapTech rule...");
+            self.debug.log("Checking AdapTech 3 rule...");
          	
             self.debug.log("Baseline - Tamanho Through: " + metricsBaseline.ThroughSeg.length);
 
@@ -125,6 +125,7 @@ MediaPlayer.rules.AdapTech2 = function () {
         		averageThrough = (sigma * average) + ((1 - sigma) * currentThrough);
     		} 
     		self.debug.log("Baseline - averageThrough: " + averageThrough + " bits/ms");
+    		self.debug.log("Baseline - currentThrough: " + currentThrough + " bits/ms");
     		
             if (isNaN(averageThrough)) {
                 //self.debug.log("Invalid ratio, bailing.");
@@ -146,11 +147,11 @@ MediaPlayer.rules.AdapTech2 = function () {
                     	    				bandwidth = self.metricsExt.getBandwidthForRepresentation(representation1.id);
                     	    				bandwidth /= 1000;
                     	    				
-                    	    				if (bandwidth <slackC * currentThrough){
+                    	    				if (bandwidth < currentThrough){ /*if (bandwidth <slackC * currentThrough){*/
                     	    					perfil1 =  representation1.id;
                     	    				}
                     	    				
-                    	    				if (bandwidth < slackC * averageThrough){
+                    	    				if (bandwidth < slackC * averageThrough){ /*if (bandwidth <slackC * currentThrough){*/
                     	    					perfil2 =  representation1.id;
                     	    				}
 
@@ -159,11 +160,10 @@ MediaPlayer.rules.AdapTech2 = function () {
                         				self.debug.log("Baseline - perfil2: " + perfil2);
                     	            	
             				
-                                      	if((bLow < currentBufferLevel.level) && (currentBufferLevel.level <  bHigh)){
+                                      	if(bLow < currentBufferLevel.level){
                     	            		if((perfil2 > current) && (current < max)){
-                    	            			current += 1;
+                    	            			current = perfil2;			/*current += 1;*/
                     	    	            	self.debug.log("Baseline - perfil2 > current");
-
                     	            		}
                     					}else if ((bMin < currentBufferLevel.level) && (currentBufferLevel.level <  bLow)){
                     	            		if((perfil1 < current) && (current > 0)){
@@ -200,6 +200,6 @@ MediaPlayer.rules.AdapTech2 = function () {
     };
 };
 
-MediaPlayer.rules.AdapTech2.prototype = {
-    constructor: MediaPlayer.rules.AdapTech2
+MediaPlayer.rules.AdapTech3.prototype = {
+    constructor: MediaPlayer.rules.AdapTech3
 };

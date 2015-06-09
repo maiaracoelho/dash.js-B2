@@ -51,6 +51,7 @@ MediaPlayer.di.Context = function () {
             this.system.mapClass('romeroMeanRule', MediaPlayer.rules.RomeroMeanRule);
             this.system.mapClass('adapTech', MediaPlayer.rules.AdapTech);
             this.system.mapClass('adapTech2', MediaPlayer.rules.AdapTech2);
+            this.system.mapClass('adapTech3', MediaPlayer.rules.AdapTech3);
             this.system.mapClass('OSMF', MediaPlayer.rules.OSMF);
             this.system.mapClass('limitSwitchesRule', MediaPlayer.rules.LimitSwitchesRule);
             this.system.mapClass('abrRulesCollection', MediaPlayer.rules.BaseRulesCollection);
