@@ -13,7 +13,7 @@ MediaPlayer.rules.AdapTech3 = function () {
                     self.manifestExt.getBandwidth(rep).then(
                         function (newBandwidth)
                         {
-                            deferred.resolve(newBandwidth / currentBandwidth);
+                            deferred.resolve(newBandwidth/currentBandwidth);
                         }
                     );
                 }
@@ -70,12 +70,12 @@ MediaPlayer.rules.AdapTech3 = function () {
             	slackC = 0.8,
             	bMin=10,
                 bLow=20,
-                bHigh=40,
+                bHigh=50,
                 representation1,
                 probability,
                 bReb = 0.5;
 
-            self.debug.log("Checking AdapTech 3 rule...");
+            self.debug.log("Checking AdapTech 2 rule...");
          	
             self.debug.log("Baseline - Tamanho Through: " + metricsBaseline.ThroughSeg.length);
 
@@ -147,49 +147,89 @@ MediaPlayer.rules.AdapTech3 = function () {
                     	    				bandwidth = self.metricsExt.getBandwidthForRepresentation(representation1.id);
                     	    				bandwidth /= 1000;
                     	    				
-                    	    				if (bandwidth < currentThrough){ /*if (bandwidth <slackC * currentThrough){*/
+                    	    				if (bandwidth <slackC * currentThrough){
                     	    					perfil1 =  representation1.id;
                     	    				}
                     	    				
-                    	    				if (bandwidth < slackC * averageThrough){ /*if (bandwidth <slackC * currentThrough){*/
+                    	    				if (bandwidth < slackC * averageThrough){
                     	    					perfil2 =  representation1.id;
                     	    				}
+
 
                     	            	}
                     	            	self.debug.log("Baseline - perfil1: " + perfil1);
                         				self.debug.log("Baseline - perfil2: " + perfil2);
                     	            	
-            				
-                                      	if(bLow < currentBufferLevel.level){
-                    	            		if((perfil2 > current) && (current < max)){
-                    	            			current = perfil2;			/*current += 1;*/
-                    	    	            	self.debug.log("Baseline - perfil2 > current");
-                    	            		}
-                    					}else if ((bMin < currentBufferLevel.level) && (currentBufferLevel.level <  bLow)){
-                    	            		if((perfil1 < current) && (current > 0)){
-                    	            			current -= 1 ;
-                    	    	            	self.debug.log("Baseline - perfil1 < current");
-                    	            		}else if ((perfil1 > current) && (current < max)){
-                    	            			current += 1;
-                    	    	            	self.debug.log("Baseline - perfil1 > current");
-                    	            		}
-                    	            	}else if ((currentBufferLevel.level < bMin) && (current > 0)){
-                        	            	self.debug.log("Baseline - calculate probability ");
-
-                    	            		probability = self.metricsBaselineExt.getRebufferingProbability(time, t1,  metrics.BufferLevel, startRequest, bMin, bReb);	
-                        	            	self.debug.log("Baseline - probability: " + probability);
-                        	            	if(probability <= 0.4){
-                            	            	self.debug.log("Baseline - sem fuga ");
+                        				probability = self.metricsBaselineExt.getRebufferingProbability(time, t1,  metrics.BufferLevel, startRequest, bMin, bReb);
+                        				
+                                      	if(probability <= 0.4){
+                                      		if(bLow < currentBufferLevel.level){
+                        	            		if((perfil2 > current) && (current < max)){
+                        	            			current += 1;			
+                        	    	            	self.debug.log("Baseline - perfil2 > current");
+                        	    	            	self.debug.log("Baseline - Current: " + current);
+                                            		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
+                        	            		}else{
+                        	            			self.debug.log("Baseline - Current: " + current);
+                                            		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
+                        	            		}
+                        					}else if ((bMin < currentBufferLevel.level) && (currentBufferLevel.level <  bLow)){
+                        	            		if((perfil1 < current) && (current > 1)){
+                        	            			current -= 1 ;
+                        	    	            	self.debug.log("Baseline - perfil1 < current");
+                        	    	            	deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
+                        	            		}else if ((perfil1 > current) && (current < max)){
+                        	            			current += 1;
+                        	    	            	self.debug.log("Baseline - perfil1 > current");
+                        	    	            	deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
+                        	            		}else{
+                        	            			self.debug.log("Baseline - Current: " + current);
+                                            		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
+                        	            		}
+                        	            	}else if ((currentBufferLevel.level < bMin) && (current > 1)){
+                            	            	self.debug.log("Baseline - calculate probability ");
                             	            	current = 1;
+                            	            	self.debug.log("Baseline - Current: " + current);
+                                        		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
                         	            	}else{
-                        	            		self.debug.log("Baseline - com fuga ");
-                            	            	current = 0;
+                        	            		self.debug.log("Baseline - Current: " + current);
+                                        		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
                         	            	}
-                    	            		
-                    	            	}
+                    					}else{
+                    						if(bLow < currentBufferLevel.level){
+                        	            		if((perfil2 > current) && (current < max)){
+                        	            			current += 1;			
+                        	    	            	self.debug.log("Baseline - perfil2 > current");
+                        	    	            	self.debug.log("Baseline - Current: " + current);
+                                            		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
+                        	            		}else{
+                        	            			self.debug.log("Baseline - Current: " + current);
+                                            		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
+                        	            		}
+                        					}else if ((bMin < currentBufferLevel.level) && (currentBufferLevel.level <  bLow)){
+                        	            		if((perfil1 < current) && (current > 0)){
+                        	            			current -= 1 ;
+                        	    	            	self.debug.log("Baseline - perfil1 < current");
+                        	    	            	deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
+                        	            		}else if ((perfil1 > current) && (current < max)){
+                        	            			current += 1;
+                        	    	            	self.debug.log("Baseline - perfil1 > current");
+                        	    	            	deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
+                        	            		}else{
+                        	            			self.debug.log("Baseline - Current: " + current);
+                                            		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
+                        	            		}
+                        	            	}else if ((currentBufferLevel.level < bMin) && (current > 0)){
+                            	            	current = 0;
+                            	            	self.debug.log("Baseline - Current: " + current);
+                                        		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
+                                        		
+                        	            	}else{
+                        	            		self.debug.log("Baseline - Current: " + current);
+                                        		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
+                        	            	}
+                    					}
                     	            	
-                    	            	self.debug.log("Baseline - Current: " + current);
-                                		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
                                     });
                         });     	
                         });     	

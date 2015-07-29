@@ -70,7 +70,7 @@ MediaPlayer.rules.AdapTech = function () {
             	slackC = 0.8,
             	bMin=10,
                 bLow=20,
-                bHigh=40,
+                bHigh=50,
                 representation1;
 
             self.debug.log("Checking AdapTech rule...");
@@ -161,23 +161,37 @@ MediaPlayer.rules.AdapTech = function () {
                     	            		if((perfil2 > current) && (current < max)){
                     	            			current += 1;
                     	    	            	self.debug.log("Baseline - perfil2 > current");
-
+                    	    	            	self.debug.log("Baseline - Current: " + current);
+                                        		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
+                    	            		}else{
+                    	            			self.debug.log("Baseline - Current: " + current);
+                                        		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
                     	            		}
                     					}else if ((bMin < currentBufferLevel.level) && (currentBufferLevel.level <  bLow)){
                     	            		if((perfil1 < current) && (current > 0)){
                     	            			current -= 1 ;
                     	    	            	self.debug.log("Baseline - perfil1 < current");
+                    	    	            	self.debug.log("Baseline - Current: " + current);
+                                        		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
                     	            		}else if ((perfil1 > current) && (current < max)){
                     	            			current += 1;
                     	    	            	self.debug.log("Baseline - perfil1 > current");
+                    	    	            	self.debug.log("Baseline - Current: " + current);
+                                        		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
+                    	            		}else{
+                    	            			self.debug.log("Baseline - Current: " + current);
+                                        		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
                     	            		}
                     	            	}else if ((currentBufferLevel.level < bMin) && (current > 0)){
                     	            		current = 0;
                         	            	self.debug.log("Baseline - 0: " + current);
+                        	            	self.debug.log("Baseline - Current: " + current);
+                                    		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
+                    	            	}else{
+                    	            		self.debug.log("Baseline - Current: " + current);
+                                    		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
                     	            	}
                     	            	
-                    	            	self.debug.log("Baseline - Current: " + current);
-                                		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
                                     });
                         });     	
                         });     	

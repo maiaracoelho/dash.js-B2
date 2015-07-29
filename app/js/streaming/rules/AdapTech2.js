@@ -13,7 +13,7 @@ MediaPlayer.rules.AdapTech2 = function () {
                     self.manifestExt.getBandwidth(rep).then(
                         function (newBandwidth)
                         {
-                            deferred.resolve(newBandwidth / currentBandwidth);
+                            deferred.resolve(newBandwidth/currentBandwidth);
                         }
                     );
                 }
@@ -70,12 +70,12 @@ MediaPlayer.rules.AdapTech2 = function () {
             	slackC = 0.8,
             	bMin=10,
                 bLow=20,
-                bHigh=40,
+                bHigh=50,
                 representation1,
                 probability,
                 bReb = 0.5;
 
-            self.debug.log("Checking AdapTech rule...");
+            self.debug.log("Checking AdapTech 2 rule...");
          	
             self.debug.log("Baseline - Tamanho Through: " + metricsBaseline.ThroughSeg.length);
 
@@ -125,6 +125,7 @@ MediaPlayer.rules.AdapTech2 = function () {
         		averageThrough = (sigma * average) + ((1 - sigma) * currentThrough);
     		} 
     		self.debug.log("Baseline - averageThrough: " + averageThrough + " bits/ms");
+    		self.debug.log("Baseline - currentThrough: " + currentThrough + " bits/ms");
     		
             if (isNaN(averageThrough)) {
                 //self.debug.log("Invalid ratio, bailing.");
@@ -154,24 +155,34 @@ MediaPlayer.rules.AdapTech2 = function () {
                     	    					perfil2 =  representation1.id;
                     	    				}
 
+
                     	            	}
                     	            	self.debug.log("Baseline - perfil1: " + perfil1);
                         				self.debug.log("Baseline - perfil2: " + perfil2);
                     	            	
             				
-                                      	if((bLow < currentBufferLevel.level) && (currentBufferLevel.level <  bHigh)){
+                                      	if(bLow < currentBufferLevel.level){
                     	            		if((perfil2 > current) && (current < max)){
-                    	            			current += 1;
+                    	            			current += 1;			
                     	    	            	self.debug.log("Baseline - perfil2 > current");
-
+                    	    	            	self.debug.log("Baseline - Current: " + current);
+                                        		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
+                    	            		}else{
+                    	            			self.debug.log("Baseline - Current: " + current);
+                                        		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
                     	            		}
                     					}else if ((bMin < currentBufferLevel.level) && (currentBufferLevel.level <  bLow)){
-                    	            		if((perfil1 < current) && (current > 0)){
-                    	            			current -= 1 ;
+                    	            		if((perfil1 < current) && (current > 1)){
+                    	            			current -= 1;
                     	    	            	self.debug.log("Baseline - perfil1 < current");
+                    	    	            	deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
                     	            		}else if ((perfil1 > current) && (current < max)){
                     	            			current += 1;
                     	    	            	self.debug.log("Baseline - perfil1 > current");
+                    	    	            	deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
+                    	            		}else{
+                    	            			self.debug.log("Baseline - Current: " + current);
+                                        		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
                     	            		}
                     	            	}else if ((currentBufferLevel.level < bMin) && (current > 0)){
                         	            	self.debug.log("Baseline - calculate probability ");
@@ -181,15 +192,19 @@ MediaPlayer.rules.AdapTech2 = function () {
                         	            	if(probability <= 0.4){
                             	            	self.debug.log("Baseline - sem fuga ");
                             	            	current = 1;
+                            	            	self.debug.log("Baseline - Current: " + current);
+                                        		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
                         	            	}else{
                         	            		self.debug.log("Baseline - com fuga ");
                             	            	current = 0;
+                            	            	self.debug.log("Baseline - Current: " + current);
+                                        		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
                         	            	}
-                    	            		
+                    	            	}else{
+                    	            		self.debug.log("Baseline - Current: " + current);
+                                    		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
                     	            	}
                     	            	
-                    	            	self.debug.log("Baseline - Current: " + current);
-                                		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
                                     });
                         });     	
                         });     	
