@@ -11,12 +11,14 @@ MediaPlayer.dependencies.WebServiceLoader = function () {
 		/**Não esquecer de sincronizar os relógios ao inicio dos experimentos**/
 		
 		
-    doLoad = function (bufferLevelMetrics, throughSegMetrics, stream) {
+    doLoad = function (bufferLevelMetrics, playListMetrics, throughSegMetrics, stream) {
             var xmlhttp = new XMLHttpRequest(),
                 self = this, 
                 url = "http://192.168.3.3/dash_vod/webservice.php", 
                 scen = 9; //<<<<----Definicao do cenario a ser utilizado
         		runWebservice++;
+        	
+        		self.metricsBaselinesModel.setDateFinalExecution(new Date());
         		
             if ( bufferLevelMetrics == 0 && throughSegMetrics == 0){
             	
@@ -31,7 +33,9 @@ MediaPlayer.dependencies.WebServiceLoader = function () {
             	
                 self.debug.log("BufferLevel: "+ bufferLevelMetrics.length);
                 self.debug.log("throughSegMetrics: "+ throughSegMetrics.length);
-                self.debug.log("executionMetrics: "+ self.metricsBaselinesModel.getDateExecution());
+                self.debug.log("playListMetrics: "+ playListMetrics.length);
+                self.debug.log("executionInicialMetrics: "+ self.metricsBaselinesModel.getDateInicialExecution());
+                self.debug.log("executionFinalMetrics: "+ self.metricsBaselinesModel.getDateFinalExecution());
                 self.debug.log("mpdMetrics: "+ self.metricsBaselinesModel.getUrlMpd());
                 self.debug.log("streamMetrics: "+ stream);
                 self.debug.log("scenMetrics: "+ scen);
@@ -40,14 +44,21 @@ MediaPlayer.dependencies.WebServiceLoader = function () {
                 xmlhttp.setRequestHeader("Content-Type", "multipart/form-data");
             }
             
-            
+            for (var i = 0; i <= playListMetrics.length-1; i++){
+                self.debug.log("PlayList" + playListMetrics[i]);
+                self.debug.log("PlayList Trace" + playListMetrics.trace.length);
+
+            	
+            }
             
         	arqJson = '{"bufferLevelMetrics":' +JSON.stringify(bufferLevelMetrics);
-        	arqJson += ', "throughSegMetrics":'+ JSON.stringify(throughSegMetrics);
-        	arqJson += ', "mpdMetrics":'+ JSON.stringify(self.metricsBaselinesModel.getUrlMpd());
-            arqJson += ', "streamMetrics":'+ JSON.stringify(stream);
-            arqJson += ', "scenMetrics":'+ JSON.stringify(scen);
-        	arqJson += ', "executionMetrics":'+ JSON.stringify(self.metricsBaselinesModel.getDateExecution())+'}';
+        	arqJson += ', "throughSegMetrics":'+JSON.stringify(throughSegMetrics);
+        	arqJson += ', "playListMetrics":'+JSON.stringify(playListMetrics);
+        	arqJson += ', "mpdMetrics":'+JSON.stringify(self.metricsBaselinesModel.getUrlMpd());
+            arqJson += ', "streamMetrics":'+JSON.stringify(stream);
+            arqJson += ', "scenMetrics":'+JSON.stringify(scen);
+            arqJson += ', "executionInicialMetrics":'+JSON.stringify(self.metricsBaselinesModel.getDateInicialExecution());
+        	arqJson += ', "executionFinalMetrics":'+JSON.stringify(self.metricsBaselinesModel.getDateFinalExecution())+'}';
 
         	self.debug.log(arqJson);
 
@@ -78,9 +89,9 @@ MediaPlayer.dependencies.WebServiceLoader = function () {
         tokenAuthentication:undefined,
 
 
-        load: function (bufferLevelMetrics, throughSegMetrics, stream) {
+        load: function (bufferLevelMetrics, playListMetrics, throughSegMetrics, stream) {
         	
-            doLoad.call(this, bufferLevelMetrics, throughSegMetrics, stream);
+            doLoad.call(this, bufferLevelMetrics, playListMetrics, throughSegMetrics, stream);
 
             return;
         }

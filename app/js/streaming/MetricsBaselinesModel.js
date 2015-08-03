@@ -2,7 +2,8 @@
 MediaPlayer.models.MetricsBaselinesModel = function () {
     "use strict";
     
-    var dateExecution;
+    var dateInicialExecution;
+    var dateFinalExecution;
     var mpd;
     
     return {
@@ -11,12 +12,20 @@ MediaPlayer.models.MetricsBaselinesModel = function () {
         eventBus: undefined,
         streamMetrics: {},
         
-        getDateExecution: function () {
-            return dateExecution;
+        getDateInicialExecution: function () {
+            return dateInicialExecution;
         },
 
-        setDateExecution: function (value) {
-        	dateExecution = value;
+        setDateInicialExecution: function (value) {
+        	dateInicialExecution = value;
+        },
+        
+        getDateFinalExecution: function () {
+            return dateFinalExecution;
+        },
+
+        setDateFinalExecution: function (value) {
+        	dateFinalExecution = value;
         },
         
         getUrlMpd: function () {

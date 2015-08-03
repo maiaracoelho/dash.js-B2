@@ -3,7 +3,7 @@ MediaPlayer.models.MetricsBaselineList = function () {
     "use strict";
 
     return {
-		ThroughSeg: []
+		ThroughSeg: [],
     };
 };
 

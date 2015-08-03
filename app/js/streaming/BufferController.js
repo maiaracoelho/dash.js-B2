@@ -169,7 +169,7 @@ MediaPlayer.dependencies.BufferController = function () {
     	            
     	            if(metrics != null && metricsBaseline != null){
     	            	if (metrics.BufferLevel != null && metricsBaseline.ThroughSeg != null){
-                       		 this.webServiceClient.load(metrics.BufferLevel, metricsBaseline.ThroughSeg, type); 
+                       		 this.webServiceClient.load(metrics.BufferLevel, metrics.PlayList, metricsBaseline.ThroughSeg, type); 
     	            	}
                	 	}
     	            /**END**/
@@ -188,7 +188,7 @@ MediaPlayer.dependencies.BufferController = function () {
          	            
          	            if(metrics != null && metricsBaseline != null){
          	            	if (metrics.BufferLevel != null && metricsBaseline.ThroughSeg != null){
-                            		 this.webServiceClient.load(metrics.BufferLevel, metricsBaseline.ThroughSeg, type); 
+                            		 this.webServiceClient.load(metrics.BufferLevel, metrics.PlayList, metricsBaseline.ThroughSeg, type); 
          	            	}
                     	 }
          	            /**END**/

@@ -91,8 +91,8 @@ Dash.dependencies.DashMetricsBaselineExtensions = function () {
     		bufferTime = bufferList[index].t.getTime() - startSessionTime;
     		
     		if(bufferTime >= startTime && bufferTime <= time){
-    			//if (bufferList[index].level > bMin){
-    			if (bufferList[index].level > bReb){
+    			if (bufferList[index].level > bMin){
+    			//if (bufferList[index].level > bReb){
     				countGreater++;
     			}else{
     				countSmaller++;

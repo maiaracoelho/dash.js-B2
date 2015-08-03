@@ -42,9 +42,9 @@ MediaPlayer.dependencies.ManifestLoader = function () {
           //Se o script de variação de largura de banda ainda não foi ativado no servidor, ele deve ser.
             if(!ACTIVE_SCRIPT){
             	ACTIVE_SCRIPT = true;
-            	self.metricsBaselinesModel.setDateExecution(new Date());
+            	self.metricsBaselinesModel.setDateInicialExecution(new Date());
             	self.metricsBaselinesModel.setUrlMpd(url);
-            	//self.webServiceClient.load(0, 0, null); 
+            	//self.webServiceClient.load(0, 0, 0, null); 
             }
 
 
