@@ -52,7 +52,6 @@ MediaPlayer.rules.AdapTech3 = function () {
         checkIndex: function (current, metrics, data, metricsBaseline, availableRepresentations) {
             var self = this,
     			lastRequest = self.metricsExt.getLastHttpRequest(metrics),
-                firstRequest = self.metricsExt.getFirstHttpRequest(metrics),
                 currentBufferLevel  = self.metricsExt.getCurrentBufferLevel(metrics),					
                 downloadTime,
                 startRequest = 0,
@@ -78,7 +77,6 @@ MediaPlayer.rules.AdapTech3 = function () {
             self.debug.log("Checking AdapTech 3 rule...");
          	
             self.debug.log("Baseline - Tamanho Through: " + metricsBaseline.ThroughSeg.length);
-
             if (!metrics) {
             	//self.debug.log("No metrics, bailing.");
             	return Q.when(new MediaPlayer.rules.SwitchRequest(current));
@@ -94,25 +92,20 @@ MediaPlayer.rules.AdapTech3 = function () {
                 return Q.when(new MediaPlayer.rules.SwitchRequest(current));
             }
             
-            if (firstRequest == null) {
-                //self.debug.log("No firstRequest made for this stream yet, bailing.");
-                return Q.when(new MediaPlayer.rules.SwitchRequest(current));
-            }
-            
         	insertThroughputs.call(self, metricsBaseline.ThroughSeg, availableRepresentations);
         	
-        	 //O início da sessão como um todo so acontece a partir do momento em que a primeira requisição de mídia é feita.
-         	startRequest = firstRequest.trequest.getTime(); 
+        	 //O início da sessão acontece assim que o mpd e requisitado.
+         	startRequest = self.metricsBaselinesModel.getDateInicialExecution().getTime(); 
         	time = lastRequest.tfinish.getTime() - startRequest;
         	
         	if (time >= deltaTime){
         		t1 = time - deltaTime;
             }
         	
-        	downloadTime = (lastRequest.tfinish.getTime() - lastRequest.tresponse.getTime())/1000;
+    		downloadTime = (lastRequest.tfinish.getTime() - lastRequest.tresponse.getTime())/1000;
             sizeSeg = (lastRequest.trace[lastRequest.trace.length - 1].b) * 8;
             currentThrough = sizeSeg/downloadTime; 	
-        	currentThrough /= 1000; 	
+        	currentThrough /= 1000; //bit/ms
         	
             // TODO : I structured this all goofy and messy.  fix plz
 

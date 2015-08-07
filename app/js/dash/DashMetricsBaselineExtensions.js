@@ -70,7 +70,7 @@ Dash.dependencies.DashMetricsBaselineExtensions = function () {
     	
     	average = sumThroughs/countSegs;
     	
-    	this.debug.log("Baseline - average: "+ countSegs);
+    	this.debug.log("Baseline - countSegs: "+ countSegs);
     	this.debug.log("Baseline - average: "+ average);
 
     	return average;
@@ -91,7 +91,7 @@ Dash.dependencies.DashMetricsBaselineExtensions = function () {
     		bufferTime = bufferList[index].t.getTime() - startSessionTime;
     		
     		if(bufferTime >= startTime && bufferTime <= time){
-    			if (bufferList[index].level > bMin){
+    			if (bufferList[index].level > (bMin/2)){
     			//if (bufferList[index].level > bReb){
     				countGreater++;
     			}else{

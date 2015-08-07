@@ -161,7 +161,7 @@ MediaPlayer.rules.AdapTech2 = function () {
                         				self.debug.log("Baseline - perfil2: " + perfil2);
                     	            	
             				
-                                      	if(bLow < currentBufferLevel.level){
+                                      	if((bLow < currentBufferLevel.level) && (currentBufferLevel.level <  bHigh)){
                     	            		if((perfil2 > current) && (current < max)){
                     	            			current += 1;			
                     	    	            	self.debug.log("Baseline - perfil2 > current");

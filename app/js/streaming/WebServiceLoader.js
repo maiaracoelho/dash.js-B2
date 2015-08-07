@@ -15,7 +15,7 @@ MediaPlayer.dependencies.WebServiceLoader = function () {
             var xmlhttp = new XMLHttpRequest(),
                 self = this, 
                 url = "http://192.168.3.3/dash_vod/webservice.php", 
-                scen = 9; //<<<<----Definicao do cenario a ser utilizado
+                scen = 11; //<<<<----Definicao do cenario a ser utilizado
         		runWebservice++;
         	
         		self.metricsBaselinesModel.setDateFinalExecution(new Date());
@@ -42,13 +42,6 @@ MediaPlayer.dependencies.WebServiceLoader = function () {
                 
                 xmlhttp.open("POST", url, true);
                 xmlhttp.setRequestHeader("Content-Type", "multipart/form-data");
-            }
-            
-            for (var i = 0; i <= playListMetrics.length-1; i++){
-                self.debug.log("PlayList" + playListMetrics[i]);
-                self.debug.log("PlayList Trace" + playListMetrics.trace.length);
-
-            	
             }
             
         	arqJson = '{"bufferLevelMetrics":' +JSON.stringify(bufferLevelMetrics);
