@@ -147,7 +147,7 @@ MediaPlayer.rules.AdapTech2 = function () {
                     	    				bandwidth = self.metricsExt.getBandwidthForRepresentation(representation1.id);
                     	    				bandwidth /= 1000;
                     	    				
-                    	    				if (bandwidth <slackC * currentThrough){
+                    	    				if (bandwidth < slackC * currentThrough){
                     	    					perfil1 =  representation1.id;
                     	    				}
                     	    				

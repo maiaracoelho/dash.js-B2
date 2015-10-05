@@ -13,7 +13,7 @@ MediaPlayer.rules.AdapTech = function () {
                     self.manifestExt.getBandwidth(rep).then(
                         function (newBandwidth)
                         {
-                            deferred.resolve(newBandwidth / currentBandwidth);
+                            deferred.resolve(newBandwidth/currentBandwidth);
                         }
                     );
                 }
@@ -70,7 +70,7 @@ MediaPlayer.rules.AdapTech = function () {
             	slackC = 0.8,
             	bMin=10,
                 bLow=20,
-                bHigh=50,
+                bHigh=30,
                 representation1;
 
             self.debug.log("Checking AdapTech rule...");
@@ -123,7 +123,7 @@ MediaPlayer.rules.AdapTech = function () {
         		averageThrough = (sigma * average) + ((1 - sigma) * currentThrough);
     		} 
     		self.debug.log("Baseline - averageThrough: " + averageThrough + " bits/ms");
-    		
+
             if (isNaN(averageThrough)) {
                 //self.debug.log("Invalid ratio, bailing.");
                 deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));
@@ -155,6 +155,7 @@ MediaPlayer.rules.AdapTech = function () {
                     	            	}
                     	            	self.debug.log("Baseline - perfil1: " + perfil1);
                         				self.debug.log("Baseline - perfil2: " + perfil2);
+                        				self.debug.log("Baseline - currentBufferLevel.level: " + currentBufferLevel.level);
                     	            	
             				
                                       	if((bLow < currentBufferLevel.level) && (currentBufferLevel.level <  bHigh)){
@@ -164,7 +165,7 @@ MediaPlayer.rules.AdapTech = function () {
                     	    	            	self.debug.log("Baseline - Current: " + current);
                                         		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
                     	            		}else{
-                    	            			self.debug.log("Baseline - Current: " + current);
+                    	            			self.debug.log("Baseline - Current1: " + current);
                                         		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
                     	            		}
                     					}else if ((bMin < currentBufferLevel.level) && (currentBufferLevel.level <  bLow)){
@@ -179,7 +180,7 @@ MediaPlayer.rules.AdapTech = function () {
                     	    	            	self.debug.log("Baseline - Current: " + current);
                                         		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
                     	            		}else{
-                    	            			self.debug.log("Baseline - Current: " + current);
+                    	            			self.debug.log("Baseline - Current:2 " + current);
                                         		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
                     	            		}
                     	            	}else if ((currentBufferLevel.level < bMin) && (current > 0)){
@@ -188,7 +189,7 @@ MediaPlayer.rules.AdapTech = function () {
                         	            	self.debug.log("Baseline - Current: " + current);
                                     		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
                     	            	}else{
-                    	            		self.debug.log("Baseline - Current: " + current);
+                    	            		self.debug.log("Baseline - Current3: " + current);
                                     		deferred.resolve(new MediaPlayer.rules.SwitchRequest(current));	
                     	            	}
                     	            	
